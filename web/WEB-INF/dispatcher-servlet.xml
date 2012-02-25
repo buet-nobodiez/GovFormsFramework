@@ -12,7 +12,9 @@
     <context:annotation-config/>
     
     <context:component-scan base-package="bd.gov.forms"/>
-
+    
+    
+    
     <mvc:interceptors>
         <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="lang"/>
@@ -31,5 +33,7 @@
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="1048576"/> <!--1MB-->
     </bean>
-
+    
+    <import resource="applicationContext.xml"/>
+    
 </beans>

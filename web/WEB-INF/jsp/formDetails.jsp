@@ -42,6 +42,8 @@
         function getFileName() {
             document.forms[0].elements["templateFileName"].value = 
                     document.forms[0].elements["pdfTemplate"].value;
+            document.forms[0].elements["logoFileName"].value = 
+                    document.forms[0].elements["logoTemplate"].value;
             return true;
         }
 
@@ -50,7 +52,28 @@
                 window.location = "removeTemplate.htm?formId=" + formId;
             }
         }
+        function deleteLogoTemplate(formId) {
+            if (confirm("<fmt:message key='msg.confirm'/>")) {
+                window.location = "removeLogoTemplate.htm?formId=" + formId;
+            }
+        }
     </script>
+    
+              <script language="JavaScript">
+        function Validate()
+        {
+            var image =document.getElementById("logo12").value;
+            if(image!=''){
+                var checkimg = image.toLowerCase();
+                if (!checkimg.match(/(\.jpg|\.png|\.JPG|\.PNG|\.jpeg|\.JPEG)$/)){
+                    alert("Please enter Image File Extensions .jpg,.png,.jpeg");
+                    document.getElementById("logo12").focus();
+                    return false;
+                }
+            }
+            return true;
+        } 
+    </script>  
 </head>
 
 <body>
@@ -63,11 +86,13 @@
     <form:hidden path="formId"/>
     <form:hidden path="status"/>
     <form:hidden path="templateFileName"/>
+    <form:hidden path="logoFileName"/>
+    
 
     <div>
         <form:errors cssClass="error"/>
     </div>
-
+<!-------->
     <div class="label">
         <form:label path="title"><fmt:message key="label.title"/></form:label>
     </div>
@@ -76,7 +101,7 @@
         <form:errors path="title" cssClass="error"/>
     </div>
     <div class="clear"></div>
-
+<!-------->
     <div class="label">
         <form:label path="subTitle"><fmt:message key="label.subtitle"/></form:label>
     </div>
@@ -85,7 +110,16 @@
         <form:errors path="subTitle" cssClass="error"/>
     </div>
     <div class="clear"></div>
-
+<!------- workflow ----->
+    <div class="label">
+        <form:label path="workflowId"><fmt:message key="label.workflowName"/></form:label>
+    </div>
+    <div class="field">
+        <form:select path="workflowId" items="${workflowOption}" cssClass=""/>
+        <form:errors path="workflowId" cssClass="error"/>
+    </div>
+    <div class="clear"></div>
+<!------------>
     <div class="label">
         <form:label path="detail"><fmt:message key="label.description"/></form:label>
     </div>
@@ -94,7 +128,25 @@
         <form:errors path="detail" cssClass="error"/>
     </div>
     <div class="clear"></div>
-
+    
+    <!--logo -->
+    <div class="label">
+        <form:label path="logoTemplate"><fmt:message key="label.logo.file"/></form:label>
+    </div>
+    <div class="field">
+        <input type="file" name="logoTemplate" class=""  />
+        <form:errors path="logoTemplate" cssClass="error"/>
+        <br/>
+        <a href="dloadTemplate.htm?formId=${formDetailsCmd.formId}">${formDetailsCmd.logoFileName}</a>
+        <c:if test="${!empty formDetailsCmd.logoFileName}">
+            <br/>
+            <a href="#" onclick="deleteLogoTemplate('${formDetailsCmd.formId}');"><fmt:message key="label.remove"/></a>
+        </c:if>
+    </div>
+    <div class="clear"></div>
+    
+    
+     <!--template -->   
     <div class="label">
         <form:label path="pdfTemplate"><fmt:message key="label.template.file"/></form:label>
     </div>
@@ -108,8 +160,9 @@
             <a href="#" onclick="deleteTemplate('${formDetailsCmd.formId}');"><fmt:message key="label.remove"/></a>
         </c:if>
     </div>
+        
     <div class="clear"></div>
-
+<!-------->
     <div class="buttonDivLeft">
         <input type="button" value="<fmt:message key='button.back'/>" onclick="window.location='formList.htm';"/>
     </div>
@@ -117,11 +170,15 @@
         <c:if test="${formDetailsCmd.formId == null  && formDetailsCmd.status == 0}">
             <input type="submit" value="<fmt:message key='button.submit'/>" onclick="return getFileName();"/>
         </c:if>
-        <c:if test="${formDetailsCmd.formId != null && formDetailsCmd.status > 0}">
+        <c:if test="${formDetailsCmd.formId != null && formDetailsCmd.status > 0 && formAction != 'version'}">
             <input type="submit" value="<fmt:message key='button.update'/>" onclick="return getFileName();"/>
         </c:if>
+        <c:if test="${formDetailsCmd.formId != null && formDetailsCmd.status > 1 && formAction == 'version'}">
+            <input type="submit" value="<fmt:message key='button.version'/>" onclick="return getFileName();"/>
+        </c:if>    
     </div>
 </form:form>
+    
 
 </body>
 </html>

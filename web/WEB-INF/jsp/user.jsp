@@ -95,17 +95,30 @@
         </div>
         <div class="clear"></div>
     </c:if>
-
-    <div class="label">
-        <form:label path="admin"><fmt:message key="label.admin"/></form:label>
-        <span class="required">*</span>
-    </div>
-    <div class="field">
-        <form:radiobuttons path="admin" items="${yesNoOption}" cssClass="required"/>
-        <form:errors path="admin" cssClass="error"/>
-    </div>
-    <div class="clear"></div>
-
+    
+    <c:if test="${!empty sessionScope.user}">
+        <div class="label">
+            <form:label path="admin"><fmt:message key="Role"/></form:label>
+            <span class="required">*</span>
+        </div>
+        <div class="field">
+            <form:radiobuttons path="admin" items="${customOption}" cssClass="required"/>
+            <form:errors path="admin" cssClass="error"/>
+        </div>
+        <div class="clear"></div>
+    </c:if>   
+     
+    <c:if test="${sessionScope.user.admin==2}">    
+        <div class="label">
+        <form:label path="ministryName"><fmt:message key="label.ministry"/></form:label>
+        </div>
+        <div class="field">
+            <form:select path="ministryName" items="${ministryList}" cssClass=""/>
+            <form:errors path="ministryName" cssClass="error"/>
+        </div>
+        <div class="clear"></div>
+    </c:if>  
+    
     <div class="label">
         <form:label path="name"><fmt:message key="label.fullName"/></form:label>
         <span class="required">*</span>
@@ -144,17 +157,20 @@
         <form:errors path="mobile" cssClass="error"/>
     </div>
     <div class="clear"></div>
-
-    <div class="label">
-        <form:label path="active"><fmt:message key="label.active"/></form:label>
-        <span class="required">*</span>
-    </div>
-    <div class="field">
-        <form:radiobuttons path="active" items="${yesNoOption}" cssClass="required"/>
-        <form:errors path="active" cssClass="error"/>
-    </div>
-    <div class="clear"></div>
-
+    
+    <c:if test="${!empty sessionScope.user}">
+        <div class="label">
+            <form:label path="active"><fmt:message key="label.active"/></form:label>
+            <span class="required">*</span>
+        </div>
+        <div class="field">
+            <form:radiobuttons path="active" items="${yesNoOption}" cssClass="required"/>
+            <form:errors path="active" cssClass="error"/>
+        </div>
+    
+        <div class="clear"></div>
+    </c:if>
+        
     <div class="buttonDivLeft">
         <input type="button" value="<fmt:message key='button.back'/>" onclick="window.location='userList.htm';"/>
     </div>

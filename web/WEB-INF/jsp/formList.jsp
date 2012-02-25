@@ -75,17 +75,30 @@
                 <c:if test="${f.status == 2}">
                     <a href="#" onclick="deactivate('${f.formId}')"><fmt:message key="action.deactivate"/></a> |
                 </c:if>
+                <c:if test="${(!empty f.parent) || (f.status == 2)}">
+                    <a href="<c:url value="previousVersions.htm?formId=${f.formId}" />"><fmt:message key="action.previous"/></a> |
+                </c:if>
+                <c:if test="${f.status == 2}">
+                    <a href="<c:url value="newVersion.htm?formId=${f.formId}" />"><fmt:message key="action.newversion"/></a> |
+                </c:if>    
             </c:if>
-            <c:if test="${f.status == 2}">
+                    
+            <c:if test="${f.status == 2 && sessionScope.user.admin ==1}">
                 <a href="<c:url value="newEntry.htm?formId=${f.formId}"/>"><fmt:message key="title.newEntry"/></a> |
             </c:if>
-            <c:if test="${f.status > 1}">
+            <c:if test="${f.status > 1 && (sessionScope.user.admin ==1 || sessionScope.user.admin ==10)}">
                 <a href="<c:url value="entryList.htm?formId=${f.formId}"/>"><fmt:message key="title.entryList"/></a> |
                 <a href="<c:url value="formInfo.htm?formId=${f.formId}"/>"><fmt:message key="title.formInfo"/></a> |
             </c:if>
-            <c:if test="${f.status == 1}">
+            <c:if test="${f.status == 1 && (sessionScope.user.admin ==1)}">
                 <a href="<c:url value="design.htm?formId=${f.formId}"/>"><fmt:message key="action.design"/></a>
             </c:if>
+            
+            <c:if test="${f.status == 2}">
+                    <a href="<c:url value="pdfExport.htm?formId=${f.formId}&page=${page}&colName=${colName}&colVal=${colVal}&sortCol=${sortCol}&sortDir=${sortDirX}"/>">
+                        Export PDF
+                    </a>
+            </c:if>    
         </span>
     </div>
 

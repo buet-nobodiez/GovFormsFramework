@@ -35,11 +35,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title><decorator:title default=""/></title>
 
-    <script type="text/javascript" src="../js/jquery.js"></script>
-    <script type="text/javascript" src="../js/jquery.validate.js"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/jquery.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/jquery.validate.js" />"></script>
 
-    <link rel="stylesheet" type="text/css" href="../css/form.css" media="screen,projection"/>
-    <link rel="stylesheet" type="text/css" href="../css/style_bn.css"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/form.css"/>" media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/style_bn.css"/>"/>
 
     <decorator:head/>
 </head>
@@ -73,13 +73,13 @@
 
         <div id="top">
             <div style="float:left;">
-                <img src="../img/header_bangla.gif"/>
+                <img src="<c:url value="/resources/img/header_bangla.gif"/>"/>
             </div>
             <div style="width: 300px;height:30px;float:right;margin-top:30px;text-align:center;"></div>
         </div>
 
         <div id="navigation">
-            <div style="float: left; width: 25%; text-align: left;">
+            <div style="float: left; width: 15%; text-align: left;">
                 <ul>
                     <li><a href="<c:url value="/formBuilder/index.htm"/>"><fmt:message key="label.home"/></a></li>
                 </ul>
@@ -110,8 +110,11 @@
                 </ul>
             </div>
 
-            <div style="float: right; width: 35%; text-align: right;">
+            <div style="float: right; width: 45%; text-align: right;">
                 <ul>
+                    <li>
+                        <a href="<c:url value="/formBuilder/dashboard.htm" />">Dashboard</a>
+                    </li>
                     <li>
                         <a href="http://www.youtube.com/watch?v=TKfp0jubykY" target="_blank"><fmt:message
                                 key="help"/></a>
@@ -120,6 +123,11 @@
                         <li>
                             <a href="<c:url value="/userMgt/login.htm"/>">
                                 <fmt:message key="label.Login"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<c:url value="/userMgt/register.htm" />">
+                                <fmt:message key="label.Register" />
                             </a>
                         </li>
                     </c:if>
@@ -132,7 +140,7 @@
                         <li style="color:#000;">
                             <a href="<c:url value="/userMgt/logout.htm"/>">
                                 <fmt:message key="label.logout"/>
-                            </a> (${sessionScope.user.userName})
+                            </a> (${sessionScope.user.userName}) (${sessionScope.user.ministryName} <fmt:message key="label.ministry"/>)
                         </li>
                     </c:if>
                 </ul>
@@ -154,17 +162,48 @@
                         <li><a href="<c:url value="/listBuilder/newList.htm"/>"><fmt:message key="label.new"/></a></li>
                         <li><a href="<c:url value="/listBuilder/list.htm"/>"><fmt:message key="label.list"/></a></li>
                     </c:if>
-                    <c:if test="${!empty sessionScope.user && sessionScope.user != null}">
+                    <c:if test="${!empty sessionScope.user && sessionScope.user.admin ==1}">
                         <li><fmt:message key="title.form"/></li>
                         <li><a href="<c:url value="/formBuilder/newForm.htm"/>"><fmt:message key="label.new"/></a></li>
                         <li><a href="<c:url value="/formBuilder/formList.htm"/>"><fmt:message key="label.list"/></a>
                         </li>
                     </c:if>
-                    <c:if test="${!empty sessionScope.user && sessionScope.user.admin ==1}">
+                    
+                    <c:if test="${!empty sessionScope.user && sessionScope.user.admin ==0}">
+                        <li><fmt:message key="title.form"/></li>
+                        <li><a href="<c:url value="/formBuilder/index.htm"/>"><fmt:message key="label.list"/></a>
+                        </li>
+                    </c:if>    
+                        
+                    <c:if test="${!empty sessionScope.user && sessionScope.user.admin ==10}">
+                        <li><fmt:message key="title.form"/></li>                    
+                        <li><a href="<c:url value="/formBuilder/formList.htm"/>"><fmt:message key="label.list"/></a>
+                        </li>
+                    </c:if>
+                        
+                    <c:if test="${!empty sessionScope.user && (sessionScope.user.admin == 1 || sessionScope.user.admin ==2)}">
                         <li><fmt:message key="title.userForm"/></li>
                         <li><a href="<c:url value="/userMgt/newUser.htm"/>"><fmt:message key="label.new"/></a></li>
                         <li><a href="<c:url value="/userMgt/userList.htm"/>"><fmt:message key="label.list"/></a></li>
                     </c:if>
+                        
+                    <c:if test="${!empty sessionScope.user && sessionScope.user.admin == 2}">
+                        <li><fmt:message key="title.ministry"/></li>
+                        <li><a href="<c:url value="/userMgt/newMinistry.htm"/>"><fmt:message key="label.new"/></a></li>
+                        <li><a href="<c:url value="/userMgt/ministryList.htm"/>"><fmt:message key="label.list"/></a></li>
+                    </c:if>    
+                    
+                    <c:if test="${!empty sessionScope.user && sessionScope.user.admin == 1}">
+                        <li><fmt:message key="title.milestone"/></li>
+                        <li><a href="<c:url value="/userMgt/newMilestone.htm"/>"><fmt:message key="label.new"/></a></li>
+                        <li><a href="<c:url value="/userMgt/milestoneList.htm"/>"><fmt:message key="label.list"/></a></li>
+                    </c:if>
+                        
+                    <c:if test="${!empty sessionScope.user && sessionScope.user.admin == 1}">
+                        <li><fmt:message key="title.workflow"/></li>
+                        <li><a href="<c:url value="/userMgt/newWorkflow.htm"/>"><fmt:message key="label.new"/></a></li>
+                        <li><a href="<c:url value="/userMgt/workflowList.htm"/>"><fmt:message key="label.list"/></a></li>
+                    </c:if>       
                 </ul>
             </div>
 

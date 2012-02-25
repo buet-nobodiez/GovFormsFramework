@@ -65,7 +65,129 @@
             font-weight: normal;
             color: #ff0000;
         }
-    </style>  
+    </style>
+
+    <style type="text/css">
+        .cssguycomments {background:#eee;border:#ddd;padding:8px;margin-bottom:40px;}
+        .cssguycomments p {font:normal 12px/18px verdana;}
+        table {border-collapse:collapse;}
+        thead th {
+        font:bold 13px/18px georgia;
+        text-align:left;
+        background:#fff4c6;
+        color:#333;
+        padding:8px 16px 8px 8px;
+        border-right:1px solid #fff;
+        border-bottom:1px solid #fff;
+        }
+        thead th.null {background:#fff;}
+        tbody th {
+        font:bold 12px/15px georgia;
+        text-align:left;
+        background:#fff9e1;
+        color:#333;
+        padding:8px;
+        border-bottom:1px solid #f3f0e4;
+        border-right:1px solid #fff;
+        }
+        tbody td {
+        font:normal 12px/15px georgia;
+        color:#333;
+        padding:8px;
+        border-right:1px solid #f3f0e4;
+        border-bottom:1px solid #f3f0e4;
+        }
+        tbody td.on {background:#f3f0e4;}
+        thead th.on {background:#ffe068;}
+        tbody th.on {background:#ffe068;}
+    </style>
+
+    <script type="text/javascript">
+        /*
+        For functions getElementsByClassName, addClassName, and removeClassName
+        Copyright Robert Nyman, http://www.robertnyman.com
+        Free to use if this text is included
+        */
+        function addLoadEvent(func) {
+        var oldonload = window.onload;
+        if (typeof window.onload != 'function') {
+        window.onload = func;
+        } else {
+        window.onload = function() {
+        oldonload();
+        func();
+        }
+        }
+        }
+        function getElementsByClassName(className, tag, elm){
+        var testClass = new RegExp("(^|\\s)" + className + "(\\s|$)");
+        var tag = tag || "*";
+        var elm = elm || document;
+        var elements = (tag == "*" && elm.all)? elm.all : elm.getElementsByTagName(tag);
+        var returnElements = [];
+        var current;
+        var length = elements.length;
+        for(var i=0; i<length; i++){
+        current = elements[i];
+        if(testClass.test(current.className)){
+        returnElements.push(current);
+        }
+        }
+        return returnElements;
+        }
+        function addClassName(elm, className){
+        var currentClass = elm.className;
+        if(!new RegExp(("(^|\\s)" + className + "(\\s|$)"), "i").test(currentClass)){
+        elm.className = currentClass + ((currentClass.length > 0)? " " : "") + className;
+        }
+        return elm.className;
+        }
+        function removeClassName(elm, className){
+        var classToRemove = new RegExp(("(^|\\s)" + className + "(\\s|$)"), "i");
+        elm.className = elm.className.replace(classToRemove, "").replace(/^\s+|\s+$/g, "");
+        return elm.className;
+        }
+        function makeTheTableHeadsHighlight() {
+        // get all the td's in the heart of the table...
+        var table = document.getElementById('rockartists');
+        var tbody = table.getElementsByTagName('tbody');
+        var tbodytds = table.getElementsByTagName('td');
+        // and loop through them...
+        for (var i=0; i<tbodytds.length; i++) {
+        // take note of their default class name
+        tbodytds[i].oldClassName = tbodytds[i].className;
+        // when someone moves their mouse over one of those cells...
+        tbodytds[i].onmouseover = function() {
+        // attach 'on' to the pointed cell
+        addClassName(this,'on');
+        // attach 'on' to the th in the thead with the same class name
+        var topheading = getElementsByClassName(this.oldClassName,'th',table);
+        addClassName(topheading[0],'on');
+        // attach 'on' to the far left th in the same row as this cell
+        var row = this.parentNode;
+        var rowheading = row.getElementsByTagName('th')[0];
+        addClassName(rowheading,'on');
+        }
+        // ok, now when someone moves their mouse away, undo everything we just did.
+        tbodytds[i].onmouseout = function() {
+        // remove 'on' from this cell
+        removeClassName(this,'on');
+        // remove 'on' from the th in the thead
+        var topheading = getElementsByClassName(this.oldClassName,'th',table);
+        removeClassName(topheading[0],'on');
+        // remove 'on' to the far left th in the same row as this cell
+        var row = this.parentNode;
+        var rowheading = row.getElementsByTagName('th')[0];
+        removeClassName(rowheading,'on');
+        }
+        }
+        }
+        addLoadEvent(makeTheTableHeadsHighlight);
+    </script>
+
+
+
+
 </head>
 
 <body>
@@ -88,37 +210,62 @@
     <input type="submit" value="<fmt:message key="search"/>"/>
 </form>
 
+
+
+
+
 <br>
 <fmt:message key="Total.Count"/>: ${totalCount}<br>
 <fmt:message key="Checked.Count"/>: ${checkedCount}<br>
 <fmt:message key="Unchecked.Count"/>: ${uncheckedCount}<br>
 <br>
 
-<table width="100%" style="border:1px solid #D3E5DA;" cellspacing="0">
-    <tr>
-        <c:url var="entryListUrl"
-               value="entryList.htm?formId=${form.formId}&entryId=${e['entry_id']}&page=${page}&colName=${colName}&colVal=${colVal}&sortDir=${sortDir}"/>
-        <td><a href="${entryListUrl}&sortCol=entry_date"><fmt:message key="label.date"/></a></td>
-        <td><a href="${entryListUrl}&sortCol=entry_time"><fmt:message key="label.time"/></a></td>
-        <td><a href="${entryListUrl}&sortCol=entry_status"><fmt:message key="label.status"/></a></td>
-        <td><b><fmt:message key="label.action"/></b></td>
-        <c:forEach var="f" items="${form.fields}">
-            <c:if test="${f.type != 'file' && f.type != 'section' && f.type != 'note' }">
-                <td>
-                    <a href="<c:url value="entryList.htm?formId=${form.formId}&entryId=${e['entry_id']}&page=${page}&colName=${colName}&colVal=${colVal}&sortCol=${f.colName}&sortDir=${sortDir}"/>">${f.label}</a>
-                </td>
-            </c:if>
-        </c:forEach>
-    </tr>
 
-    <c:forEach var="e" items="${entries}" varStatus="st">
+    <table width="100%"  cellspacing="0" id="rockartists">
+
+	<thead>
+	<tr>
+            <c:url var="entryListUrl"
+               value="entryList.htm?formId=${form.formId}&entryId=${e['entry_id']}&page=${page}&colName=${colName}&colVal=${colVal}&sortDir=${sortDir}"/>
+            <th class="null">&nbsp;</th>
+            <th class="r1"><a href="${entryListUrl}&sortCol=entry_date"><fmt:message key="label.date"/></a></th>
+            <th class="r2"><a href="${entryListUrl}&sortCol=entry_time"><fmt:message key="label.time"/></a></th>
+            <th class="r3"><a href="${entryListUrl}&sortCol=entry_status"><fmt:message key="label.status"/></a></th>
+
+
+            <th class="r4"><b><fmt:message key="label.action"/></b></th>
+            <c:forEach var="f" items="${form.fields}"  varStatus="counter1">
+                <c:if test="${f.type != 'file' && f.type != 'section' && f.type != 'note' }">
+                    <th class="r${counter1.count+4}}">
+                        <a href="<c:url value="entryList.htm?formId=${form.formId}&entryId=${e['entry_id']}&page=${page}&colName=${colName}&colVal=${colVal}&sortCol=${f.colName}&sortDir=${sortDir}"/>">${f.label}</a>
+                    </th>
+                </c:if>
+            </c:forEach>
+
+        </tr>
+	</thead>
+
+
+	<tbody>
+
+
+
+
+
+      <c:forEach var="e" items="${entries}" varStatus="st">
         <tr <c:if test="${st.count % 2 == 1}">class="odd"</c:if>>
-            <td>${e['entry_date']}</td>
-            <td>${e['entry_time']}</td>
-            <td>${e['entry_status']}</td>
-            <td>
+            <th class=""><c:out value="${st.count}" /></th>
+            <td class="r1">${e['entry_date']}</td>
+            <td class="r2">${e['entry_time']}</td>
+            <td class="r3">${e['entry_status']}</td>
+            <td class="r4">
                 <c:url var="popupUrl" value="printHtml.htm?formId=${form.formId}&entryId=${e['entry_id']}"/>
                 <a href="#" onclick="javascript: popitup('${popupUrl}');"><fmt:message key="label.print"/></a> |
+                
+                <c:url var="markCheckedUrl"
+  value="individualpdf.htm?formId=${form.formId}&entryId=${e['entry_id']}"                       />
+                <a href="${markCheckedUrl}" >Export to PDF</a> |
+                
                 <c:url var="markCheckedUrl"
                        value="markChecked.htm?formId=${form.formId}&entryId=${e['entry_id']}&page=${page}&colName=${colName}&colVal=${colVal}&sortCol=${sortCol}&sortDir=${sortDirX}"/>
                 <c:if test="${e['entry_status'] == 'Submitted' }">
@@ -128,20 +275,35 @@
                     <a href="${markCheckedUrl}&checked=false"><fmt:message key="label.unchecked"/></a>
                 </c:if>
             </td>
-            <c:forEach var="f" items="${form.fields}">
+            <c:forEach var="f" items="${form.fields}" varStatus="counter">
                 <c:if test="${f.type != 'file' && f.type != 'section' && f.type != 'note' }">
-                    <td>${e[f.colName]}</td>
+                    <td class="r${counter.count+4}}">${e[f.colName]}</td>
                 </c:if>
             </c:forEach>
+       
         </tr>
     </c:forEach>
+
+
+
+
+	</tbody>
 </table>
 
+
+
+
+<br>
 <c:forEach var="i" begin="1" end="${totalPages}" step="1" varStatus="status">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
     <a href="<c:url value="entryList.htm?formId=${formId}&page=${i}&colName=${colName}&colVal=${colVal}&sortCol=${sortCol}&sortDir=${sortDirX}"/>">${i}</a> |
 </c:forEach>
 
-<br/>
+<br><br>
 
 <div style="text-align: center;">
     <a href="<c:url value="excelExport.htm?formId=${formId}&page=${page}&colName=${colName}&colVal=${colVal}&sortCol=${sortCol}&sortDir=${sortDirX}"/>">

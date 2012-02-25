@@ -87,7 +87,7 @@
         <div class="clear"></div>
     </c:if>
 
-    <c:if test="${fieldCmd.type == 'text'}">
+    <c:if test="${fieldCmd.type == 'text' || fieldCmd.type == 'file'}">
         <div class="label">
             <form:label path="inputType"><fmt:message key="new.field.validation"/></form:label>
         </div>
@@ -97,8 +97,8 @@
         </div>
         <div class="clear"></div>
     </c:if>
-
-    <c:if test="${fieldCmd.type == 'select' || fieldCmd.type == 'radio'}">
+                                                                            <!-- @humayun -->
+    <c:if test="${fieldCmd.type == 'select' || fieldCmd.type == 'radio' || fieldCmd.type == 'radiotext' ||fieldCmd.type == 'checkbox'}">
         <div class="label">
             <form:label path="listDataId"><fmt:message key="new.field.list.source"/></form:label>
         </div>

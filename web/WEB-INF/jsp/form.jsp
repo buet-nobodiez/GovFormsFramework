@@ -33,7 +33,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>${formCmd.title}</title>
-
+    
+    <script language="JavaScript" src="<c:url value="/resources/calender/calendar_us.js"/>"></script>
+<link rel="stylesheet" href="<c:url value="/resources/calender/calendar.css"/>" />	
+    
     <script type="text/javascript">
         $(document).ready(function() {
             $("#form1").validate();
@@ -42,15 +45,28 @@
                 alert('Load was performed.');
             });
         });
-
+        function makeChoice(){
+		var val = 0;
+		for( i = 0; i < document.myform.elements["fields[${indx}].strVal"].length; i++ )	{
+			if( document.myform.elements["fields[${indx}].strVal"].checked == true ){
+				val = document.myform.elements["fields[${indx}].strVal"].value;
+				if(val=='other'){
+					document.myform.elements["fields[${indx}].strVal"].disabled=false;
+					document.myform.elements["fields[${indx}].strVal"].focus();
+				}else{
+					document.myform.elements["fields[${indx}].strVal"].disabled=true;
+				}
+			}
+		}
+	}
         function getFileNames() {
-        <c:forEach var="f" items="${formCmd.fields}" varStatus="status">
-        <c:set var="indx" value="${status.count-1}" />
-        <c:if test="${f.type == 'file'}">
-            document.forms[0].elements["fields[${indx}].strVal"].value = 
-                    document.forms[0].elements["fields[${indx}].byteVal"].value;
-        </c:if>
-        </c:forEach>
+            <c:forEach var="f" items="${formCmd.fields}" varStatus="status">
+            <c:set var="indx" value="${status.count-1}" />
+            <c:if test="${f.type == 'file'}">
+                document.forms[0].elements["fields[${indx}].strVal"].value = 
+                        document.forms[0].elements["fields[${indx}].byteVal"].value;
+            </c:if>
+            </c:forEach>
             return true;
         }
 
@@ -59,6 +75,7 @@
                 window.location = "deleteField.htm?formId=" + formId + "&fieldId=" + fieldId;
             }
         }
+        
 
         function moveField(formId, fieldId, order) {
             window.location = "moveField.htm?formId=" + formId + "&fieldId=" + fieldId + "&order=" + order;
@@ -76,9 +93,13 @@
 </head>
 
 <body>
-
+    
+    <c:if test="${empty sessionScope.user}">
+        <c:redirect url="/userMgt/login.htm" />
+    </c:if>
+    
 <c:url var="formActionUrl" value="/formBuilder/${formAction}.htm"/>
-<form:form modelAttribute="formCmd" method="POST" action="${formActionUrl}" id="form1" enctype="multipart/form-data">
+<form:form name="myform" modelAttribute="formCmd" method="POST" action="${formActionUrl}" id="form1" enctype="multipart/form-data">
 
     <form:hidden path="formId"/>
 
@@ -89,6 +110,10 @@
                     <option value="text">Text</option>
                     <option value="select">Select</option>
                     <option value="radio">Radio</option>
+                    <option value="radiotext">Radio Text</option>
+                    <option value="checkbox">Multiple Choice</option>   //@humayun
+                    <option value="calender">Calender</option>
+                    <option value="file">Document</option>
                     <option value="textarea">Text Area</option>
                     <option value="section">Section</option>
                     <option value="note">Note</option>
@@ -127,13 +152,16 @@
                     </c:if>
                 </span>
             </div>
-
+<!--
             <div style="float:right;margin:2px;padding:2px;">
                 <span class="help">
                     <select name="newFieldType${indx+1}">
                        <option value="text">Text</option>
                        <option value="select">Select</option>
                        <option value="radio">Radio</option>
+                       <option value="checkbox">Multiple Choice</option>   //@humayun
+                       <option value="calender">Calender</option>
+                       <option value="file">Document</option>
                        <option value="textarea">Text Area</option>
                        <option value="section">Section</option>
                        <option value="note">Note</option>
@@ -143,7 +171,7 @@
                     </a>
                 </span>
             </div>
-
+-->
             <div class="clear" style="border:none;"></div>
         </c:if>
 
@@ -206,7 +234,65 @@
             </div>
             <div class="clear"></div>
         </c:if>
-
+            
+        <c:if test="${f.type == 'radiotext'}">
+            <div class="label">
+                <form:label path="fields[${indx}].strVal">${f.label}</form:label>
+                <c:if test="${f.required ==1}">
+                    <span class="required">*</span>
+                </c:if>
+                <span class="help">${f.helpText}</span>
+            </div>
+            <div class="field">
+                <form:radiobuttons  onclick="makeChoice();"  path="fields[${indx}].strVal" items="${f.list}" cssClass="${f.cssClass}"/>
+                <form:input path="fields[${indx}].strVal" />
+                <form:errors path="fields[${indx}].strVal" cssClass="error"/>
+            </div>
+            <div class="clear"></div>
+        </c:if>    
+            
+       <!-- @humayun -->
+       <c:if test="${f.type == 'checkbox'}">
+            <div class="label">
+                <form:label path="fields[${indx}].strVal">${f.label}</form:label>
+                <c:if test="${f.required ==1}">
+                    <span class="required">*</span>
+                </c:if>
+                <span class="help">${f.helpText}</span>
+            </div>
+            <div class="field">
+                <form:checkboxes path="fields[${indx}].strVal" items="${f.list}" cssClass="${f.cssClass}"/>
+                <form:errors path="fields[${indx}].strVal" cssClass="error"/>
+            </div>
+            <div class="clear"></div>
+        </c:if>     
+            
+        <!-- should be change here-->
+        <c:if test="${f.type == 'calender'}">
+            <div class="label">
+                <form:label path="fields[${indx}].strVal">${f.label}</form:label>
+                <c:if test="${f.required ==1}">
+                    <span class="required">*</span>
+                </c:if>
+                <span class="help">${f.helpText}</span>
+            </div>
+            <div class="field">
+                
+                <form:input path="fields[${indx}].strVal"/>
+                <form:errors path="fields[${indx}].strVal" cssClass="error"/>
+                    <script language="JavaScript">
+                        new tcal ({
+                            // form name
+                            'formname': 'myform',
+                            // input name
+                            'controlname': 'fields[${indx}].strVal'
+                        });                 
+                    </script>                                       
+            </div>
+            <div class="clear"></div>
+        </c:if>
+            
+       
         <c:if test="${f.type == 'file'}">
             <form:hidden path="fields[${indx}].strVal"/>
             <div class="label">

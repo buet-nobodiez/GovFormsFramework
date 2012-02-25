@@ -14,7 +14,7 @@
     </listener>
 
 
-    <!-- Application Context -->
+    <!-- Application Context 
     
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -24,7 +24,7 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-
+-->
 
     <!-- Spring Dispatcher -->
 
@@ -39,14 +39,14 @@
     </servlet-mapping>
 
 
-    <!-- Web App Root Key -->
+    <!-- Web App Root Key 
 
     <context-param>
         <param-name>webAppRootKey</param-name>
         <param-value>GovForms</param-value>
     </context-param>
 
-
+-->
     <!-- UTF-8 -->
 
     <filter>

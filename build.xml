@@ -1,157 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="GovForm-07-02" default="default" basedir=".">
+    <description>Builds, tests, and runs the project GovForm-07-02.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <!--
 
-<project name="GovForms" basedir="." default="usage">
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
 
-    <description>BD Government Forms</description>
+      -pre-init:                 called before initialization of project properties 
+      -post-init:                called after initialization of project properties 
+      -pre-compile:              called before javac compilation 
+      -post-compile:             called after javac compilation 
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-dist:                 called before archive building 
+      -post-dist:                called after archive building 
+      -post-clean:               called after cleaning build products 
+      -pre-run-deploy:           called before deploying
+      -post-run-deploy:          called after deploying
 
-    <property name="src.dir" value="${basedir}/src"/>
-    <property name="web.dir" value="${basedir}/web"/>
-    <property name="lib.dir" value="${basedir}/lib"/>
+    Example of pluging an obfuscator after the compilation could look like 
 
-    <property name="build.dir" value="${basedir}/build"/>
-    <property name="classes.dir" value="${build.dir}/WEB-INF/classes"/>
-    <property name="dist.dir" value="${basedir}/dist"/>
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
 
-    <property file="build.properties"/>
-
-    <path id="classpath">
-        <fileset dir="${lib.dir}" includes="*.jar" />
-        <fileset dir="${tomcat.lib}" includes="*.jar" />
-    </path>
-
-
-    <target name="usage">
-        <echo message=""/>
-        <echo message="${ant.project.name} build file"/>
-        <echo message="----------------------------"/>
-        <echo message=""/>
-        <echo message="Available targets are:"/>
-        <echo message=""/>
-        <echo message="clean          --> Clean build and dist directories"/>
-        <echo message="build          --> Build the application"/>
-        <echo message="war            --> Build WAR file for deployment"/>
-        <echo message=""/>
-        <echo message="deploy         --> Deploy application as WAR in Tomcat"/>
-        <echo message="undeploy       --> Undeploy application from Tomcat"/>
-        <echo message="redeploy       --> Redeploy application in Tomcat"/>
-        <echo message=""/>
-        <echo message="build-deploy   --> Build and Deploy application in Tomcat"/>
-        <echo message="build-redeploy --> Build and Redeploy application in Tomcat"/>
-        <echo message=""/>
-        <echo message="startTomcat    --> Start Tomcat server"/>
-        <echo message="stopTomcat     --> Stop Tomcat server"/>
-        <echo message="restartTomcat  --> Restart Tomcat server"/>
-        <echo message=""/>
-    </target>
-
-
-    <target name="init">
-        <mkdir dir="${classes.dir}"/>
-    </target>
-
-    <target name="resources" depends="init" description="prepares deployment resources">
-        <copy todir="${build.dir}">
-            <fileset dir="${web.dir}"/>
-        </copy>
-
-        <mkdir dir="${build.dir}/WEB-INF/lib"/>
-
-        <copy todir="${build.dir}/WEB-INF/lib">
-            <fileset dir="${lib.dir}" includes="*.jar" />
-        </copy>
-    </target>
-
-    <target name="compile" depends="init">
-        <javac destdir="${classes.dir}"
-               classpathref="classpath"
-               srcdir="${src.dir}"
-               includeantruntime="false"/>
-    </target>
-
-    <target name="clean">
-        <delete dir="${build.dir}"/>
-        <delete dir="${dist.dir}"/>
-    </target>
-
-    <target name="build" depends="resources, compile"/>
-
-    <target name="startTomcat">
-        <exec executable="${tomcat.home}/bin/catalina.sh" osfamily="unix">
-            <arg value="start"/>
-        </exec>
-        <exec executable="cmd" osfamily="winnt">
-            <arg value="/C"/>
-            <arg value="${tomcat.home}/bin/catalina.bat"/>
-            <arg value="start"/>
-            <env key="CATALINA_HOME" value="${tomcat.home}"/>
-        </exec>
-    </target>
-
-    <target name="stopTomcat">
-        <exec executable="${tomcat.home}/bin/catalina.sh" osfamily="unix">
-            <arg value="stop"/>
-        </exec>
-        <exec executable="cmd" osfamily="winnt">
-            <arg value="/C"/>
-            <arg value="${tomcat.home}/bin/catalina.bat"/>
-            <arg value="stop"/>
-            <env key="CATALINA_HOME" value="${tomcat.home}"/>
-        </exec>
-    </target>
-
-    <target name="restartTomcat">
-            <antcall target="stopTomcat"/>
-            <sleep seconds="2"/>
-            <antcall target="startTomcat"/>
-    </target>
-
-    <path id="catalina-ant-classpath">
-        <fileset dir="${tomcat.lib}">
-            <include name="catalina-ant.jar"/>
-        </fileset>
-    </path>
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
 
 
-    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
-        <classpath refid="catalina-ant-classpath"/>
-    </taskdef>
+    Other way how to customize the build is by overriding existing main targets.
+    The target of interest are: 
 
-    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
-        <classpath refid="catalina-ant-classpath"/>
-    </taskdef>
+      init-macrodef-javac:    defines macro for javac compilation
+      init-macrodef-junit:   defines macro for junit execution
+      init-macrodef-debug:    defines macro for class debugging
+      do-dist:                archive building
+      run:                    execution of project 
+      javadoc-build:          javadoc generation 
 
+    Example of overriding the target for project execution could look like 
 
-    <target name="remove-deployment">
-        <delete file="${deploy.path}/${context.path}.war"/>
-        <delete dir="${deploy.path}/${context.path}"/>
-    </target>
+        <target name="run" depends="<PROJNAME>-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
 
-    <target name="undeploy" depends="remove-deployment" description="Undeploy application">
-        <undeploy url="${tomcat.manager.url}" username="${tomcat.manager.username}"
-                  password="${tomcat.manager.password}"
-                  path="/${context.path}"/>
-    </target>
+    Notice that overridden target depends on jar target and not only on 
+    compile target as regular run target does. Again, for list of available 
+    properties which you can use check the target you are overriding in 
+    nbproject/build-impl.xml file. 
 
-    <target name="war" depends="clean, build" description="Build WAR file for deployment">
-        <mkdir dir="${dist.dir}"/>
-        <war destfile="${dist.dir}/${context.path}.war" webxml="${build.dir}/WEB-INF/web.xml">
-            <fileset dir="${build.dir}"/>
-        </war>
-    </target>
-    
-    <target name="copy-war" description="Copy WAR to the deployment path">
-        <copy todir="${deploy.path}" file="${dist.dir}/${context.path}.war"/>
-    </target>
-
-    <target name="deploy" depends="copy-war">
-        <deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/${context.path}" war="file:${dist.dir}/${context.path}.war"/>
-    </target>
-
-    <target name="redeploy" depends="undeploy, deploy" />
-    
-    <target name="build-deploy" depends="war, deploy"/>
-
-    <target name="build-redeploy" depends="war, redeploy"/>
-
+    -->
 </project>
